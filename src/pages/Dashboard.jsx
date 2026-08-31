@@ -6,7 +6,9 @@ import Breadcrumbs from '../components/Breadcrumbs';
 import FolderCard from '../components/FolderCard';
 import FileCard from '../components/FileCard';
 import CreateFolderModal from '../components/CreateFolderModal';
-import { Folder, File, Sparkles } from 'lucide-react';
+import UploadModal from '../components/UploadModal';
+import PreviewModal from '../components/PreviewModal';
+import { Folder, Sparkles } from 'lucide-react';
 
 export default function Dashboard() {
   const [activeTab, setActiveTab] = useState('my-drive');
@@ -20,6 +22,8 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   
   const [isFolderModalOpen, setIsFolderModalOpen] = useState(false);
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+  const [selectedPreviewFile, setSelectedPreviewFile] = useState(null);
 
   // Fetch folders and files from Backend API
   const fetchContents = useCallback(async () => {
@@ -92,6 +96,7 @@ export default function Dashboard() {
           setSearchQuery('');
         }}
         onOpenCreateFolder={() => setIsFolderModalOpen(true)}
+        onOpenUploadModal={() => setIsUploadModalOpen(true)}
       />
 
       {/* Main Content Area */}
@@ -131,14 +136,22 @@ export default function Dashboard() {
               </div>
               <h3 className="text-lg font-semibold text-white">This folder is empty</h3>
               <p className="text-xs text-slate-400 mt-1 mb-6">
-                Create a new folder or upload files to get started.
+                Upload a file or create a new folder to get started.
               </p>
-              <button
-                onClick={() => setIsFolderModalOpen(true)}
-                className="py-2.5 px-5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-medium text-xs shadow-lg shadow-blue-600/20"
-              >
-                + Create Folder
-              </button>
+              <div className="flex items-center justify-center gap-3">
+                <button
+                  onClick={() => setIsUploadModalOpen(true)}
+                  className="py-2.5 px-5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-medium text-xs shadow-lg shadow-blue-600/20"
+                >
+                  Upload File
+                </button>
+                <button
+                  onClick={() => setIsFolderModalOpen(true)}
+                  className="py-2.5 px-5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-medium text-xs border border-slate-700/50"
+                >
+                  Create Folder
+                </button>
+              </div>
             </div>
           ) : (
             <div className="space-y-8">
@@ -170,6 +183,7 @@ export default function Dashboard() {
                       <FileCard
                         key={file.id}
                         file={file}
+                        onPreview={(f) => setSelectedPreviewFile(f)}
                         onDelete={handleDeleteFile}
                         viewMode={viewMode}
                       />
@@ -187,6 +201,19 @@ export default function Dashboard() {
         isOpen={isFolderModalOpen}
         onClose={() => setIsFolderModalOpen(false)}
         onCreate={handleCreateFolder}
+      />
+
+      <UploadModal
+        isOpen={isUploadModalOpen}
+        onClose={() => setIsUploadModalOpen(false)}
+        currentFolderId={currentFolderId}
+        onUploadSuccess={fetchContents}
+      />
+
+      <PreviewModal
+        file={selectedPreviewFile}
+        isOpen={!!selectedPreviewFile}
+        onClose={() => setSelectedPreviewFile(null)}
       />
     </div>
   );

@@ -1,13 +1,12 @@
 import React from 'react';
 import { 
   HardDrive, 
-  Folder, 
   Users, 
   Star, 
   Clock, 
   Trash2, 
   Plus, 
-  HardDriveUpload,
+  UploadCloud,
   Database
 } from 'lucide-react';
 
@@ -37,10 +36,17 @@ export default function Sidebar({ activeTab, setActiveTab, onOpenCreateFolder, o
         {/* Action Buttons */}
         <div className="space-y-2 mb-6">
           <button
-            onClick={onOpenCreateFolder}
+            onClick={onOpenUploadModal}
             className="w-full py-2.5 px-4 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-medium text-sm transition-all shadow-lg shadow-blue-600/20 flex items-center justify-center gap-2"
           >
-            <Plus className="w-4 h-4" />
+            <UploadCloud className="w-4 h-4" />
+            <span>Upload File</span>
+          </button>
+          <button
+            onClick={onOpenCreateFolder}
+            className="w-full py-2 px-4 rounded-xl bg-slate-800/80 hover:bg-slate-800 text-slate-300 font-medium text-xs border border-slate-700/50 transition-all flex items-center justify-center gap-2"
+          >
+            <Plus className="w-3.5 h-3.5" />
             <span>New Folder</span>
           </button>
         </div>

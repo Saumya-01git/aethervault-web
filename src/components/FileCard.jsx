@@ -10,8 +10,7 @@ import {
   File, 
   Download, 
   Trash2, 
-  Star,
-  ExternalLink
+  Eye
 } from 'lucide-react';
 
 const formatFileSize = (bytes) => {
@@ -33,12 +32,15 @@ const getFileIcon = (mimeType = '') => {
   return File;
 };
 
-export default function FileCard({ file, onDownload, onDelete, onToggleStar, viewMode = 'grid' }) {
+export default function FileCard({ file, onPreview, onDelete, viewMode = 'grid' }) {
   const Icon = getFileIcon(file.mimeType);
 
   if (viewMode === 'list') {
     return (
-      <div className="flex items-center justify-between p-3 rounded-xl glass-card hover:bg-slate-800/60 group border border-slate-800 transition-all">
+      <div 
+        onClick={() => onPreview(file)}
+        className="flex items-center justify-between p-3 rounded-xl glass-card hover:bg-slate-800/60 cursor-pointer group border border-slate-800 transition-all"
+      >
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-lg bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center">
             <Icon className="w-4 h-4" />
@@ -51,11 +53,19 @@ export default function FileCard({ file, onDownload, onDelete, onToggleStar, vie
           </div>
         </div>
         <div className="flex items-center gap-2">
+          <button
+            onClick={(e) => { e.stopPropagation(); onPreview(file); }}
+            title="Preview"
+            className="p-1.5 rounded-lg text-slate-400 hover:text-blue-400 hover:bg-slate-700/50"
+          >
+            <Eye className="w-3.5 h-3.5" />
+          </button>
           {file.downloadUrl && (
             <a
               href={file.downloadUrl}
               target="_blank"
               rel="noreferrer"
+              onClick={(e) => e.stopPropagation()}
               title="Download"
               className="p-1.5 rounded-lg text-slate-400 hover:text-blue-400 hover:bg-slate-700/50"
             >
@@ -63,7 +73,7 @@ export default function FileCard({ file, onDownload, onDelete, onToggleStar, vie
             </a>
           )}
           <button
-            onClick={() => onDelete(file.id)}
+            onClick={(e) => { e.stopPropagation(); onDelete(file.id); }}
             title="Delete"
             className="p-1.5 rounded-lg text-slate-400 hover:text-red-400 hover:bg-slate-700/50"
           >
@@ -75,17 +85,28 @@ export default function FileCard({ file, onDownload, onDelete, onToggleStar, vie
   }
 
   return (
-    <div className="glass-card p-4 rounded-2xl hover:bg-slate-800/60 border border-slate-800/80 group transition-all shadow-md flex flex-col justify-between">
+    <div
+      onClick={() => onPreview(file)}
+      className="glass-card p-4 rounded-2xl hover:bg-slate-800/60 border border-slate-800/80 cursor-pointer group transition-all shadow-md flex flex-col justify-between"
+    >
       <div className="flex items-start justify-between mb-3">
         <div className="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center shadow-inner">
           <Icon className="w-5 h-5" />
         </div>
         <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+          <button
+            onClick={(e) => { e.stopPropagation(); onPreview(file); }}
+            title="Preview"
+            className="p-1.5 rounded-lg text-slate-400 hover:text-blue-400 hover:bg-slate-700/50"
+          >
+            <Eye className="w-3.5 h-3.5" />
+          </button>
           {file.downloadUrl && (
             <a
               href={file.downloadUrl}
               target="_blank"
               rel="noreferrer"
+              onClick={(e) => e.stopPropagation()}
               title="Download"
               className="p-1.5 rounded-lg text-slate-400 hover:text-blue-400 hover:bg-slate-700/50"
             >
@@ -93,7 +114,7 @@ export default function FileCard({ file, onDownload, onDelete, onToggleStar, vie
             </a>
           )}
           <button
-            onClick={() => onDelete(file.id)}
+            onClick={(e) => { e.stopPropagation(); onDelete(file.id); }}
             title="Delete"
             className="p-1.5 rounded-lg text-slate-400 hover:text-red-400 hover:bg-slate-700/50"
           >
