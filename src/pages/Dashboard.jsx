@@ -9,6 +9,7 @@ import CreateFolderModal from '../components/CreateFolderModal';
 import UploadModal from '../components/UploadModal';
 import PreviewModal from '../components/PreviewModal';
 import ShareModal from '../components/ShareModal';
+import SkeletonLoader from '../components/SkeletonLoader';
 import { Folder, Sparkles } from 'lucide-react';
 
 export default function Dashboard() {
@@ -16,6 +17,7 @@ export default function Dashboard() {
   const [currentFolderId, setCurrentFolderId] = useState(null);
   const [viewMode, setViewMode] = useState('grid');
   const [searchQuery, setSearchQuery] = useState('');
+  const [sortBy, setSortBy] = useState('name');
   
   const [folders, setFolders] = useState([]);
   const [files, setFiles] = useState([]);
@@ -36,6 +38,11 @@ export default function Dashboard() {
         setFolders(res.data.folders || []);
         setFiles(res.data.files || []);
         setPath([]);
+      } else if (activeTab === 'starred') {
+        const res = await api.get('/stars');
+        setFolders(res.data.starredFolders || []);
+        setFiles(res.data.starredFiles || []);
+        setPath([]);
       } else if (currentFolderId) {
         const res = await api.get(`/folders/${currentFolderId}`);
         setFolders(res.data.children?.folders || []);
@@ -52,11 +59,39 @@ export default function Dashboard() {
     } finally {
       setLoading(false);
     }
-  }, [currentFolderId, searchQuery]);
+  }, [currentFolderId, searchQuery, activeTab]);
 
   useEffect(() => {
     fetchContents();
   }, [fetchContents]);
+
+  // Sort Folders and Files
+  const sortItems = (items, type = 'folder') => {
+    return [...items].sort((a, b) => {
+      if (sortBy === 'name') {
+        return (a.name || '').localeCompare(b.name || '');
+      } else if (sortBy === 'date') {
+        return new Date(b.createdAt || 0) - new Date(a.createdAt || 0);
+      } else if (sortBy === 'size') {
+        return (b.sizeBytes || 0) - (a.sizeBytes || 0);
+      }
+      return 0;
+    });
+  };
+
+  // Toggle Star Handler
+  const handleToggleStar = async (resourceType, resourceId, isStarred) => {
+    try {
+      if (isStarred) {
+        await api.delete('/stars', { data: { resourceType, resourceId } });
+      } else {
+        await api.post('/stars', { resourceType, resourceId });
+      }
+      fetchContents();
+    } catch (err) {
+      console.error('Failed to toggle star:', err);
+    }
+  };
 
   // Folder Actions
   const handleCreateFolder = async (folderName) => {
@@ -87,6 +122,9 @@ export default function Dashboard() {
     }
   };
 
+  const sortedFolders = sortItems(folders, 'folder');
+  const sortedFiles = sortItems(files, 'file');
+
   return (
     <div className="flex min-h-screen bg-slate-950 text-slate-100">
       {/* Sidebar */}
@@ -108,6 +146,8 @@ export default function Dashboard() {
           setSearchQuery={setSearchQuery}
           viewMode={viewMode}
           setViewMode={setViewMode}
+          sortBy={sortBy}
+          setSortBy={setSortBy}
         />
 
         <main className="flex-1 p-6 overflow-y-auto">
@@ -121,48 +161,62 @@ export default function Dashboard() {
           <div className="flex items-center justify-between my-4">
             <h2 className="text-xl font-bold text-white capitalize flex items-center gap-2">
               <Sparkles className="w-5 h-5 text-blue-400" />
-              <span>{searchQuery ? `Search Results for "${searchQuery}"` : path.length > 0 ? path[path.length - 1].name : 'My Drive'}</span>
+              <span>
+                {searchQuery
+                  ? `Search Results for "${searchQuery}"`
+                  : activeTab === 'starred'
+                  ? 'Starred Items'
+                  : activeTab === 'recent'
+                  ? 'Recent Files'
+                  : path.length > 0
+                  ? path[path.length - 1].name
+                  : 'My Drive'}
+              </span>
             </h2>
           </div>
 
-          {/* Loading Indicator */}
+          {/* Loading Skeleton */}
           {loading ? (
-            <div className="py-20 flex justify-center items-center">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
-            </div>
-          ) : folders.length === 0 && files.length === 0 ? (
+            <SkeletonLoader viewMode={viewMode} count={4} />
+          ) : sortedFolders.length === 0 && sortedFiles.length === 0 ? (
             /* Empty State */
             <div className="py-20 text-center glass-card rounded-2xl p-8 border border-slate-800 my-4 max-w-md mx-auto">
               <div className="w-16 h-16 rounded-2xl bg-blue-600/10 text-blue-400 flex items-center justify-center mx-auto mb-4 border border-blue-500/20">
                 <Folder className="w-8 h-8" />
               </div>
-              <h3 className="text-lg font-semibold text-white">This folder is empty</h3>
+              <h3 className="text-lg font-semibold text-white">
+                {activeTab === 'starred' ? 'No starred items yet' : 'This folder is empty'}
+              </h3>
               <p className="text-xs text-slate-400 mt-1 mb-6">
-                Upload a file or create a new folder to get started.
+                {activeTab === 'starred'
+                  ? 'Star items to easily find them later.'
+                  : 'Upload a file or create a new folder to get started.'}
               </p>
-              <div className="flex items-center justify-center gap-3">
-                <button
-                  onClick={() => setIsUploadModalOpen(true)}
-                  className="py-2.5 px-5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-medium text-xs shadow-lg shadow-blue-600/20"
-                >
-                  Upload File
-                </button>
-                <button
-                  onClick={() => setIsFolderModalOpen(true)}
-                  className="py-2.5 px-5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-medium text-xs border border-slate-700/50"
-                >
-                  Create Folder
-                </button>
-              </div>
+              {activeTab !== 'starred' && (
+                <div className="flex items-center justify-center gap-3">
+                  <button
+                    onClick={() => setIsUploadModalOpen(true)}
+                    className="py-2.5 px-5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-medium text-xs shadow-lg shadow-blue-600/20"
+                  >
+                    Upload File
+                  </button>
+                  <button
+                    onClick={() => setIsFolderModalOpen(true)}
+                    className="py-2.5 px-5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-medium text-xs border border-slate-700/50"
+                  >
+                    Create Folder
+                  </button>
+                </div>
+              )}
             </div>
           ) : (
             <div className="space-y-8">
               {/* Folders Section */}
-              {folders.length > 0 && (
+              {sortedFolders.length > 0 && (
                 <div>
                   <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Folders</h3>
                   <div className={viewMode === 'grid' ? 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4' : 'space-y-2'}>
-                    {folders.map((folder) => (
+                    {sortedFolders.map((folder) => (
                       <FolderCard
                         key={folder.id}
                         folder={folder}
@@ -170,6 +224,7 @@ export default function Dashboard() {
                         onRename={handleRenameFolder}
                         onDelete={handleDeleteFolder}
                         onShare={(res) => setSelectedShareResource(res)}
+                        onToggleStar={handleToggleStar}
                         viewMode={viewMode}
                       />
                     ))}
@@ -178,17 +233,18 @@ export default function Dashboard() {
               )}
 
               {/* Files Section */}
-              {files.length > 0 && (
+              {sortedFiles.length > 0 && (
                 <div>
                   <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Files</h3>
                   <div className={viewMode === 'grid' ? 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4' : 'space-y-2'}>
-                    {files.map((file) => (
+                    {sortedFiles.map((file) => (
                       <FileCard
                         key={file.id}
                         file={file}
                         onPreview={(f) => setSelectedPreviewFile(f)}
                         onDelete={handleDeleteFile}
                         onShare={(res) => setSelectedShareResource(res)}
+                        onToggleStar={handleToggleStar}
                         viewMode={viewMode}
                       />
                     ))}

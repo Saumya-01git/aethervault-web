@@ -1,7 +1,9 @@
 import React from 'react';
-import { Folder, Share2, Trash2, Edit2 } from 'lucide-react';
+import { Folder, Share2, Trash2, Edit2, Star } from 'lucide-react';
 
-export default function FolderCard({ folder, onOpen, onRename, onDelete, onShare, viewMode = 'grid' }) {
+export default function FolderCard({ folder, onOpen, onRename, onDelete, onShare, onToggleStar, viewMode = 'grid' }) {
+  const isStarred = folder.isStarred;
+
   if (viewMode === 'list') {
     return (
       <div 
@@ -17,6 +19,17 @@ export default function FolderCard({ folder, onOpen, onRename, onDelete, onShare
           </span>
         </div>
         <div className="flex items-center gap-2">
+          {onToggleStar && (
+            <button
+              onClick={(e) => { e.stopPropagation(); onToggleStar('folder', folder.id, isStarred); }}
+              title={isStarred ? 'Unstar' : 'Star'}
+              className={`p-1.5 rounded-lg transition-colors ${
+                isStarred ? 'text-amber-400 hover:bg-slate-700/50' : 'text-slate-400 hover:text-amber-400 hover:bg-slate-700/50'
+              }`}
+            >
+              <Star className={`w-3.5 h-3.5 ${isStarred ? 'fill-amber-400' : ''}`} />
+            </button>
+          )}
           {onShare && (
             <button
               onClick={(e) => { e.stopPropagation(); onShare(folder); }}
@@ -55,6 +68,17 @@ export default function FolderCard({ folder, onOpen, onRename, onDelete, onShare
           <Folder className="w-5 h-5" />
         </div>
         <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+          {onToggleStar && (
+            <button
+              onClick={(e) => { e.stopPropagation(); onToggleStar('folder', folder.id, isStarred); }}
+              title={isStarred ? 'Unstar' : 'Star'}
+              className={`p-1.5 rounded-lg transition-colors ${
+                isStarred ? 'text-amber-400 hover:bg-slate-700/50' : 'text-slate-400 hover:text-amber-400 hover:bg-slate-700/50'
+              }`}
+            >
+              <Star className={`w-3.5 h-3.5 ${isStarred ? 'fill-amber-400' : ''}`} />
+            </button>
+          )}
           {onShare && (
             <button
               onClick={(e) => { e.stopPropagation(); onShare(folder); }}
@@ -81,8 +105,9 @@ export default function FolderCard({ folder, onOpen, onRename, onDelete, onShare
         </div>
       </div>
       <div>
-        <h3 className="font-semibold text-sm text-slate-200 group-hover:text-white truncate">
-          {folder.name}
+        <h3 className="font-semibold text-sm text-slate-200 group-hover:text-white truncate flex items-center justify-between">
+          <span>{folder.name}</span>
+          {isStarred && <Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400 inline shrink-0" />}
         </h3>
         <p className="text-[11px] text-slate-500 mt-0.5">Folder</p>
       </div>

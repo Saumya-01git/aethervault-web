@@ -1,8 +1,8 @@
 import React from 'react';
-import { Search, LayoutGrid, List, LogOut, User as UserIcon } from 'lucide-react';
+import { Search, LayoutGrid, List, LogOut, User as UserIcon, ArrowUpDown } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
-export default function Navbar({ searchQuery, setSearchQuery, viewMode, setViewMode }) {
+export default function Navbar({ searchQuery, setSearchQuery, viewMode, setViewMode, sortBy, setSortBy }) {
   const { user, logout } = useAuth();
 
   return (
@@ -21,6 +21,20 @@ export default function Navbar({ searchQuery, setSearchQuery, viewMode, setViewM
 
       {/* Controls & Profile */}
       <div className="flex items-center gap-3">
+        {/* Sort Dropdown */}
+        <div className="flex items-center gap-1.5 px-2 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-xs text-slate-300">
+          <ArrowUpDown className="w-3.5 h-3.5 text-blue-400 shrink-0" />
+          <select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value)}
+            className="bg-transparent text-xs text-slate-200 outline-none cursor-pointer"
+          >
+            <option value="name" className="bg-slate-900 text-slate-200">Sort by Name</option>
+            <option value="date" className="bg-slate-900 text-slate-200">Sort by Date</option>
+            <option value="size" className="bg-slate-900 text-slate-200">Sort by Size</option>
+          </select>
+        </div>
+
         {/* View Mode Toggle */}
         <div className="flex items-center p-1 rounded-xl bg-slate-900 border border-slate-800">
           <button

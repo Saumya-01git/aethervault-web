@@ -11,7 +11,8 @@ import {
   Download, 
   Trash2, 
   Eye,
-  Share2
+  Share2,
+  Star
 } from 'lucide-react';
 
 const formatFileSize = (bytes) => {
@@ -33,8 +34,9 @@ const getFileIcon = (mimeType = '') => {
   return File;
 };
 
-export default function FileCard({ file, onPreview, onDelete, onShare, viewMode = 'grid' }) {
+export default function FileCard({ file, onPreview, onDelete, onShare, onToggleStar, viewMode = 'grid' }) {
   const Icon = getFileIcon(file.mimeType);
+  const isStarred = file.isStarred;
 
   if (viewMode === 'list') {
     return (
@@ -54,6 +56,17 @@ export default function FileCard({ file, onPreview, onDelete, onShare, viewMode 
           </div>
         </div>
         <div className="flex items-center gap-2">
+          {onToggleStar && (
+            <button
+              onClick={(e) => { e.stopPropagation(); onToggleStar('file', file.id, isStarred); }}
+              title={isStarred ? 'Unstar' : 'Star'}
+              className={`p-1.5 rounded-lg transition-colors ${
+                isStarred ? 'text-amber-400 hover:bg-slate-700/50' : 'text-slate-400 hover:text-amber-400 hover:bg-slate-700/50'
+              }`}
+            >
+              <Star className={`w-3.5 h-3.5 ${isStarred ? 'fill-amber-400' : ''}`} />
+            </button>
+          )}
           {onShare && (
             <button
               onClick={(e) => { e.stopPropagation(); onShare(file); }}
@@ -104,6 +117,17 @@ export default function FileCard({ file, onPreview, onDelete, onShare, viewMode 
           <Icon className="w-5 h-5" />
         </div>
         <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+          {onToggleStar && (
+            <button
+              onClick={(e) => { e.stopPropagation(); onToggleStar('file', file.id, isStarred); }}
+              title={isStarred ? 'Unstar' : 'Star'}
+              className={`p-1.5 rounded-lg transition-colors ${
+                isStarred ? 'text-amber-400 hover:bg-slate-700/50' : 'text-slate-400 hover:text-amber-400 hover:bg-slate-700/50'
+              }`}
+            >
+              <Star className={`w-3.5 h-3.5 ${isStarred ? 'fill-amber-400' : ''}`} />
+            </button>
+          )}
           {onShare && (
             <button
               onClick={(e) => { e.stopPropagation(); onShare(file); }}
@@ -142,8 +166,9 @@ export default function FileCard({ file, onPreview, onDelete, onShare, viewMode 
         </div>
       </div>
       <div>
-        <h3 className="font-semibold text-sm text-slate-200 group-hover:text-white truncate" title={file.name}>
-          {file.name}
+        <h3 className="font-semibold text-sm text-slate-200 group-hover:text-white truncate flex items-center justify-between" title={file.name}>
+          <span>{file.name}</span>
+          {isStarred && <Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400 inline shrink-0" />}
         </h3>
         <div className="flex items-center justify-between mt-1 text-[11px] text-slate-500">
           <span>{formatFileSize(file.sizeBytes)}</span>
