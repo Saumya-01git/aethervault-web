@@ -1,7 +1,7 @@
 import React from 'react';
-import { Folder, MoreVertical, Trash2, Edit2 } from 'lucide-react';
+import { Folder, Share2, Trash2, Edit2 } from 'lucide-react';
 
-export default function FolderCard({ folder, onOpen, onRename, onDelete, viewMode = 'grid' }) {
+export default function FolderCard({ folder, onOpen, onRename, onDelete, onShare, viewMode = 'grid' }) {
   if (viewMode === 'list') {
     return (
       <div 
@@ -17,6 +17,15 @@ export default function FolderCard({ folder, onOpen, onRename, onDelete, viewMod
           </span>
         </div>
         <div className="flex items-center gap-2">
+          {onShare && (
+            <button
+              onClick={(e) => { e.stopPropagation(); onShare(folder); }}
+              title="Share"
+              className="p-1.5 rounded-lg text-slate-400 hover:text-blue-400 hover:bg-slate-700/50"
+            >
+              <Share2 className="w-3.5 h-3.5" />
+            </button>
+          )}
           <button
             onClick={(e) => { e.stopPropagation(); onRename(folder); }}
             title="Rename"
@@ -46,6 +55,15 @@ export default function FolderCard({ folder, onOpen, onRename, onDelete, viewMod
           <Folder className="w-5 h-5" />
         </div>
         <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+          {onShare && (
+            <button
+              onClick={(e) => { e.stopPropagation(); onShare(folder); }}
+              title="Share"
+              className="p-1.5 rounded-lg text-slate-400 hover:text-blue-400 hover:bg-slate-700/50"
+            >
+              <Share2 className="w-3.5 h-3.5" />
+            </button>
+          )}
           <button
             onClick={(e) => { e.stopPropagation(); onRename(folder); }}
             title="Rename"

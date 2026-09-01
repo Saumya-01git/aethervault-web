@@ -8,6 +8,7 @@ import FileCard from '../components/FileCard';
 import CreateFolderModal from '../components/CreateFolderModal';
 import UploadModal from '../components/UploadModal';
 import PreviewModal from '../components/PreviewModal';
+import ShareModal from '../components/ShareModal';
 import { Folder, Sparkles } from 'lucide-react';
 
 export default function Dashboard() {
@@ -24,6 +25,7 @@ export default function Dashboard() {
   const [isFolderModalOpen, setIsFolderModalOpen] = useState(false);
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const [selectedPreviewFile, setSelectedPreviewFile] = useState(null);
+  const [selectedShareResource, setSelectedShareResource] = useState(null);
 
   // Fetch folders and files from Backend API
   const fetchContents = useCallback(async () => {
@@ -167,6 +169,7 @@ export default function Dashboard() {
                         onOpen={(id) => setCurrentFolderId(id)}
                         onRename={handleRenameFolder}
                         onDelete={handleDeleteFolder}
+                        onShare={(res) => setSelectedShareResource(res)}
                         viewMode={viewMode}
                       />
                     ))}
@@ -185,6 +188,7 @@ export default function Dashboard() {
                         file={file}
                         onPreview={(f) => setSelectedPreviewFile(f)}
                         onDelete={handleDeleteFile}
+                        onShare={(res) => setSelectedShareResource(res)}
                         viewMode={viewMode}
                       />
                     ))}
@@ -214,6 +218,12 @@ export default function Dashboard() {
         file={selectedPreviewFile}
         isOpen={!!selectedPreviewFile}
         onClose={() => setSelectedPreviewFile(null)}
+      />
+
+      <ShareModal
+        resource={selectedShareResource}
+        isOpen={!!selectedShareResource}
+        onClose={() => setSelectedShareResource(null)}
       />
     </div>
   );

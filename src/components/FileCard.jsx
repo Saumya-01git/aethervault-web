@@ -10,7 +10,8 @@ import {
   File, 
   Download, 
   Trash2, 
-  Eye
+  Eye,
+  Share2
 } from 'lucide-react';
 
 const formatFileSize = (bytes) => {
@@ -32,7 +33,7 @@ const getFileIcon = (mimeType = '') => {
   return File;
 };
 
-export default function FileCard({ file, onPreview, onDelete, viewMode = 'grid' }) {
+export default function FileCard({ file, onPreview, onDelete, onShare, viewMode = 'grid' }) {
   const Icon = getFileIcon(file.mimeType);
 
   if (viewMode === 'list') {
@@ -53,6 +54,15 @@ export default function FileCard({ file, onPreview, onDelete, viewMode = 'grid' 
           </div>
         </div>
         <div className="flex items-center gap-2">
+          {onShare && (
+            <button
+              onClick={(e) => { e.stopPropagation(); onShare(file); }}
+              title="Share"
+              className="p-1.5 rounded-lg text-slate-400 hover:text-blue-400 hover:bg-slate-700/50"
+            >
+              <Share2 className="w-3.5 h-3.5" />
+            </button>
+          )}
           <button
             onClick={(e) => { e.stopPropagation(); onPreview(file); }}
             title="Preview"
@@ -94,6 +104,15 @@ export default function FileCard({ file, onPreview, onDelete, viewMode = 'grid' 
           <Icon className="w-5 h-5" />
         </div>
         <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+          {onShare && (
+            <button
+              onClick={(e) => { e.stopPropagation(); onShare(file); }}
+              title="Share"
+              className="p-1.5 rounded-lg text-slate-400 hover:text-blue-400 hover:bg-slate-700/50"
+            >
+              <Share2 className="w-3.5 h-3.5" />
+            </button>
+          )}
           <button
             onClick={(e) => { e.stopPropagation(); onPreview(file); }}
             title="Preview"
