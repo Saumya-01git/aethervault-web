@@ -9,8 +9,9 @@ import CreateFolderModal from '../components/CreateFolderModal';
 import UploadModal from '../components/UploadModal';
 import PreviewModal from '../components/PreviewModal';
 import ShareModal from '../components/ShareModal';
+import VersionModal from '../components/VersionModal';
 import SkeletonLoader from '../components/SkeletonLoader';
-import { Folder, Sparkles } from 'lucide-react';
+import { Folder, Sparkles, Trash2, RotateCcw, ShieldAlert } from 'lucide-react';
 
 export default function Dashboard() {
   const [activeTab, setActiveTab] = useState('my-drive');
@@ -28,6 +29,7 @@ export default function Dashboard() {
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const [selectedPreviewFile, setSelectedPreviewFile] = useState(null);
   const [selectedShareResource, setSelectedShareResource] = useState(null);
+  const [selectedVersionFile, setSelectedVersionFile] = useState(null);
 
   // Fetch folders and files from Backend API
   const fetchContents = useCallback(async () => {
@@ -42,6 +44,11 @@ export default function Dashboard() {
         const res = await api.get('/stars');
         setFolders(res.data.starredFolders || []);
         setFiles(res.data.starredFiles || []);
+        setPath([]);
+      } else if (activeTab === 'trash') {
+        const res = await api.get('/trash');
+        setFolders(res.data.folders || []);
+        setFiles(res.data.files || []);
         setPath([]);
       } else if (currentFolderId) {
         const res = await api.get(`/folders/${currentFolderId}`);
@@ -66,7 +73,7 @@ export default function Dashboard() {
   }, [fetchContents]);
 
   // Sort Folders and Files
-  const sortItems = (items, type = 'folder') => {
+  const sortItems = (items) => {
     return [...items].sort((a, b) => {
       if (sortBy === 'name') {
         return (a.name || '').localeCompare(b.name || '');
@@ -77,6 +84,27 @@ export default function Dashboard() {
       }
       return 0;
     });
+  };
+
+  // Trash Handlers
+  const handleRestoreItem = async (resourceType, resourceId) => {
+    try {
+      await api.post('/trash/restore', { resourceType, resourceId });
+      fetchContents();
+    } catch (err) {
+      console.error('Failed to restore item:', err);
+    }
+  };
+
+  const handlePurgeItem = async (resourceType, resourceId) => {
+    if (confirm('Permanently delete this item? This action cannot be undone.')) {
+      try {
+        await api.delete('/trash/purge', { data: { resourceType, resourceId } });
+        fetchContents();
+      } catch (err) {
+        console.error('Failed to purge item:', err);
+      }
+    }
   };
 
   // Toggle Star Handler
@@ -122,8 +150,8 @@ export default function Dashboard() {
     }
   };
 
-  const sortedFolders = sortItems(folders, 'folder');
-  const sortedFiles = sortItems(files, 'file');
+  const sortedFolders = sortItems(folders);
+  const sortedFiles = sortItems(files);
 
   return (
     <div className="flex min-h-screen bg-slate-950 text-slate-100">
@@ -152,10 +180,12 @@ export default function Dashboard() {
 
         <main className="flex-1 p-6 overflow-y-auto">
           {/* Breadcrumbs Navigation */}
-          <Breadcrumbs
-            path={path}
-            onNavigate={(id) => setCurrentFolderId(id)}
-          />
+          {activeTab === 'my-drive' && (
+            <Breadcrumbs
+              path={path}
+              onNavigate={(id) => setCurrentFolderId(id)}
+            />
+          )}
 
           {/* Section Heading */}
           <div className="flex items-center justify-between my-4">
@@ -166,6 +196,8 @@ export default function Dashboard() {
                   ? `Search Results for "${searchQuery}"`
                   : activeTab === 'starred'
                   ? 'Starred Items'
+                  : activeTab === 'trash'
+                  ? 'Trash Bin'
                   : activeTab === 'recent'
                   ? 'Recent Files'
                   : path.length > 0
@@ -185,14 +217,16 @@ export default function Dashboard() {
                 <Folder className="w-8 h-8" />
               </div>
               <h3 className="text-lg font-semibold text-white">
-                {activeTab === 'starred' ? 'No starred items yet' : 'This folder is empty'}
+                {activeTab === 'starred' ? 'No starred items yet' : activeTab === 'trash' ? 'Trash is empty' : 'This folder is empty'}
               </h3>
               <p className="text-xs text-slate-400 mt-1 mb-6">
                 {activeTab === 'starred'
                   ? 'Star items to easily find them later.'
+                  : activeTab === 'trash'
+                  ? 'Deleted items will appear here before permanent deletion.'
                   : 'Upload a file or create a new folder to get started.'}
               </p>
-              {activeTab !== 'starred' && (
+              {activeTab === 'my-drive' && (
                 <div className="flex items-center justify-center gap-3">
                   <button
                     onClick={() => setIsUploadModalOpen(true)}
@@ -209,7 +243,66 @@ export default function Dashboard() {
                 </div>
               )}
             </div>
+          ) : activeTab === 'trash' ? (
+            /* Trash Custom View with Restore & Purge Controls */
+            <div className="space-y-4">
+              <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-300 text-xs flex items-center gap-2 mb-4">
+                <ShieldAlert className="w-4 h-4 shrink-0" />
+                <span>Items in Trash are soft-deleted. You can restore them or delete them permanently.</span>
+              </div>
+
+              {sortedFolders.map((folder) => (
+                <div key={folder.id} className="flex items-center justify-between p-3 rounded-xl glass-card border border-slate-800">
+                  <div className="flex items-center gap-3">
+                    <Folder className="w-5 h-5 text-blue-400" />
+                    <span className="text-sm font-medium text-white">{folder.name}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => handleRestoreItem('folder', folder.id)}
+                      className="px-3 py-1.5 rounded-lg bg-blue-600/20 text-blue-400 hover:bg-blue-600/30 text-xs font-medium flex items-center gap-1"
+                    >
+                      <RotateCcw className="w-3.5 h-3.5" />
+                      <span>Restore</span>
+                    </button>
+                    <button
+                      onClick={() => handlePurgeItem('folder', folder.id)}
+                      className="px-3 py-1.5 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 text-xs font-medium flex items-center gap-1"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                      <span>Delete Permanently</span>
+                    </button>
+                  </div>
+                </div>
+              ))}
+
+              {sortedFiles.map((file) => (
+                <div key={file.id} className="flex items-center justify-between p-3 rounded-xl glass-card border border-slate-800">
+                  <div className="flex items-center gap-3">
+                    <Folder className="w-5 h-5 text-indigo-400" />
+                    <span className="text-sm font-medium text-white">{file.name}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => handleRestoreItem('file', file.id)}
+                      className="px-3 py-1.5 rounded-lg bg-blue-600/20 text-blue-400 hover:bg-blue-600/30 text-xs font-medium flex items-center gap-1"
+                    >
+                      <RotateCcw className="w-3.5 h-3.5" />
+                      <span>Restore</span>
+                    </button>
+                    <button
+                      onClick={() => handlePurgeItem('file', file.id)}
+                      className="px-3 py-1.5 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 text-xs font-medium flex items-center gap-1"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                      <span>Delete Permanently</span>
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
           ) : (
+            /* Normal Folder & File Explorer */
             <div className="space-y-8">
               {/* Folders Section */}
               {sortedFolders.length > 0 && (
@@ -280,6 +373,12 @@ export default function Dashboard() {
         resource={selectedShareResource}
         isOpen={!!selectedShareResource}
         onClose={() => setSelectedShareResource(null)}
+      />
+
+      <VersionModal
+        file={selectedVersionFile}
+        isOpen={!!selectedVersionFile}
+        onClose={() => setSelectedVersionFile(null)}
       />
     </div>
   );
