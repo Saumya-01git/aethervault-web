@@ -19,9 +19,9 @@ export default function Navbar({ searchQuery, setSearchQuery, viewMode, setViewM
   }, []);
 
   return (
-    <header className="h-16 border-b border-slate-800/80 bg-slate-950/60 backdrop-blur-xl px-6 flex items-center justify-between gap-4 sticky top-0 z-20 transition-all">
+    <header className="min-h-16 py-2 border-b border-slate-800/80 bg-slate-950/80 backdrop-blur-xl px-4 sm:px-6 flex items-center justify-between gap-2 sm:gap-4 sticky top-0 z-20 transition-all flex-wrap sm:flex-nowrap">
       {/* Search Input with Clear Button & Shortcut Badge */}
-      <div className="flex-1 max-w-md relative group">
+      <div className="flex-1 min-w-[140px] max-w-xs sm:max-w-md relative group">
         <Search className="w-4 h-4 text-slate-400 group-focus-within:text-cyan-400 transition-colors absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
         <input
           ref={searchInputRef}
@@ -49,7 +49,7 @@ export default function Navbar({ searchQuery, setSearchQuery, viewMode, setViewM
       </div>
 
       {/* Controls & Profile */}
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2 sm:gap-3 shrink-0">
         {/* Background Theme Mode Switcher */}
         {setThemeMode && (
           <div className="flex items-center p-1 rounded-xl bg-slate-900/90 border border-slate-800 text-xs">
