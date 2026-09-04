@@ -164,7 +164,7 @@ export default function FileCard({ file, onPreview, onDelete, onShare, onToggleS
         <div className={`w-11 h-11 rounded-2xl border flex items-center justify-center shadow-md transition-transform group-hover:scale-105 ${fileMeta.color}`}>
           <Icon className="w-5.5 h-5.5" />
         </div>
-        <div className={`flex items-center gap-1 transition-opacity ${isStarred ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
+        <div className="flex items-center gap-1 transition-opacity opacity-90 group-hover:opacity-100">
           {onToggleStar && (
             <button
               onClick={(e) => { e.stopPropagation(); onToggleStar('file', file.id, isStarred); }}

@@ -74,7 +74,7 @@ export default function FolderCard({ folder, onOpen, onRename, onDelete, onShare
         <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-blue-600/20 to-indigo-600/20 border border-blue-500/30 text-blue-400 flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
           <Folder className="w-5.5 h-5.5" />
         </div>
-        <div className={`flex items-center gap-1 transition-opacity ${isStarred ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
+        <div className="flex items-center gap-1 transition-opacity opacity-90 group-hover:opacity-100">
           {onToggleStar && (
             <button
               onClick={(e) => { e.stopPropagation(); onToggleStar('folder', folder.id, isStarred); }}
