@@ -7,10 +7,11 @@ import {
   Trash2, 
   Plus, 
   UploadCloud,
-  Database
+  Database,
+  UserCheck
 } from 'lucide-react';
 
-export default function Sidebar({ activeTab, setActiveTab, onOpenCreateFolder, onOpenUploadModal }) {
+export default function Sidebar({ activeTab, setActiveTab, onOpenCreateFolder, onOpenUploadModal, onOpenProfile }) {
   const navItems = [
     { id: 'my-drive', label: 'My Drive', icon: HardDrive },
     { id: 'shared', label: 'Shared with me', icon: Users },
@@ -74,18 +75,29 @@ export default function Sidebar({ activeTab, setActiveTab, onOpenCreateFolder, o
         </nav>
       </div>
 
-      {/* Storage Quota Footer */}
-      <div className="p-4 rounded-xl glass-card bg-slate-900/60 border border-slate-800/80">
-        <div className="flex items-center gap-2 text-xs text-slate-300 font-medium mb-2">
-          <Database className="w-4 h-4 text-blue-400" />
-          <span>Storage Usage</span>
-        </div>
-        <div className="w-full h-2 bg-slate-800 rounded-full overflow-hidden mb-2">
-          <div className="h-full bg-gradient-to-r from-blue-500 to-indigo-500 w-1/4 rounded-full"></div>
-        </div>
-        <div className="flex justify-between text-[11px] text-slate-400">
-          <span>2.5 GB used</span>
-          <span>10 GB total</span>
+      <div className="space-y-3">
+        {/* Profile & Settings Trigger */}
+        <button
+          onClick={onOpenProfile}
+          className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-800/60 border border-slate-800/60 transition-all"
+        >
+          <UserCheck className="w-4 h-4 text-blue-400 shrink-0" />
+          <span>Profile & Settings</span>
+        </button>
+
+        {/* Storage Quota Footer */}
+        <div className="p-4 rounded-xl glass-card bg-slate-900/60 border border-slate-800/80">
+          <div className="flex items-center gap-2 text-xs text-slate-300 font-medium mb-2">
+            <Database className="w-4 h-4 text-blue-400" />
+            <span>Storage Usage</span>
+          </div>
+          <div className="w-full h-2 bg-slate-800 rounded-full overflow-hidden mb-2">
+            <div className="h-full bg-gradient-to-r from-blue-500 to-indigo-500 w-1/4 rounded-full"></div>
+          </div>
+          <div className="flex justify-between text-[11px] text-slate-400">
+            <span>2.5 GB used</span>
+            <span>15 GB total</span>
+          </div>
         </div>
       </div>
     </aside>

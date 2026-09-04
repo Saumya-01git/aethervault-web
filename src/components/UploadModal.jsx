@@ -1,8 +1,8 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { UploadCloud, X, File, CheckCircle2, AlertCircle } from 'lucide-react';
 import api from '../api/client';
 
-export default function UploadModal({ isOpen, onClose, currentFolderId, onUploadSuccess }) {
+export default function UploadModal({ isOpen, onClose, currentFolderId, onUploadSuccess, initialFile = null }) {
   const [dragActive, setDragActive] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [uploading, setUploading] = useState(false);
@@ -10,6 +10,13 @@ export default function UploadModal({ isOpen, onClose, currentFolderId, onUpload
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const fileInputRef = useRef(null);
+
+  useEffect(() => {
+    if (initialFile) {
+      setSelectedFile(initialFile);
+      setError('');
+    }
+  }, [initialFile]);
 
   if (!isOpen) return null;
 
@@ -60,7 +67,7 @@ export default function UploadModal({ isOpen, onClose, currentFolderId, onUpload
           'Content-Type': 'multipart/form-data'
         },
         onUploadProgress: (progressEvent) => {
-          const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+          const percentCompleted = Math.round((progressEvent.loaded * 100) / (progressEvent.total || 100));
           setProgress(percentCompleted);
         }
       });

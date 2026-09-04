@@ -1,27 +1,49 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { HardDrive, Lock, Mail, User, ArrowRight, ShieldCheck } from 'lucide-react';
+import { HardDrive, Lock, Mail, User, ArrowRight, ShieldCheck, Eye, EyeOff, Check } from 'lucide-react';
+import { validateName, calculatePasswordStrength, validatePassword } from '../utils/validation';
 
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
   const [formData, setFormData] = useState({ name: '', email: '', password: '' });
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const { login, register } = useAuth();
 
+  const strength = calculatePasswordStrength(formData.password);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    setLoading(true);
 
+    if (!isLogin) {
+      // Validate Name (e.g. reject numeric names like "123")
+      const nameVal = validateName(formData.name);
+      if (!nameVal.isValid) {
+        setError(nameVal.error);
+        return;
+      }
+
+      // Validate Password
+      const passVal = validatePassword(formData.password);
+      if (!passVal.isValid) {
+        setError(passVal.error);
+        return;
+      }
+
+      if (strength.score < 2) {
+        setError('Please choose a stronger password (at least 8 characters with numbers or letters).');
+        return;
+      }
+    }
+
+    setLoading(true);
     try {
       if (isLogin) {
         await login(formData.email, formData.password);
       } else {
-        if (!formData.name.trim()) {
-          throw new Error('Name is required');
-        }
-        await register(formData.name, formData.email, formData.password);
+        await register(formData.name.trim(), formData.email, formData.password);
       }
     } catch (err) {
       const msg = err.response?.data?.error?.message || err.message || 'Authentication failed. Please try again.';
@@ -69,8 +91,8 @@ export default function AuthPage() {
           </div>
 
           {error && (
-            <div className="mb-4 p-3 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 text-xs flex items-center gap-2">
-              <ShieldCheck className="w-4 h-4 shrink-0" />
+            <div className="mb-4 p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-xs flex items-start gap-2">
+              <ShieldCheck className="w-4 h-4 shrink-0 mt-0.5" />
               <span>{error}</span>
             </div>
           )}
@@ -86,10 +108,16 @@ export default function AuthPage() {
                     required
                     placeholder="John Doe"
                     value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    onChange={(e) => {
+                      setFormData({ ...formData, name: e.target.value });
+                      if (error) setError('');
+                    }}
                     className="w-full glass-input rounded-xl pl-9 pr-4 py-2.5 text-sm"
                   />
                 </div>
+                <p className="text-[11px] text-slate-400 mt-1">
+                  Name must contain letters (cannot be only numbers like '123').
+                </p>
               </div>
             )}
 
@@ -113,14 +141,59 @@ export default function AuthPage() {
               <div className="relative">
                 <Lock className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
                 <input
-                  type="password"
+                  type={showPassword ? 'text' : 'password'}
                   required
                   placeholder="••••••••"
                   value={formData.password}
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                  className="w-full glass-input rounded-xl pl-9 pr-4 py-2.5 text-sm"
+                  className="w-full glass-input rounded-xl pl-9 pr-10 py-2.5 text-sm"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-3 text-slate-400 hover:text-slate-200"
+                >
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
               </div>
+
+              {/* Password Strength Meter on Registration */}
+              {!isLogin && formData.password && (
+                <div className="mt-2.5 space-y-2">
+                  <div className="flex items-center justify-between text-[11px] font-semibold">
+                    <span className="text-slate-400">Password Strength:</span>
+                    <span className={`capitalize ${strength.score >= 3 ? 'text-emerald-400' : strength.score === 2 ? 'text-amber-400' : 'text-red-400'}`}>
+                      {strength.label}
+                    </span>
+                  </div>
+                  <div className="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
+                    <div
+                      className={`h-full transition-all duration-300 ${strength.color}`}
+                      style={{ width: `${strength.percentage}%` }}
+                    ></div>
+                  </div>
+
+                  {/* Criteria Checklist */}
+                  <div className="grid grid-cols-2 gap-1.5 pt-1 text-[10px]">
+                    <div className={`flex items-center gap-1 ${strength.criteria.minLength ? 'text-emerald-400' : 'text-slate-400'}`}>
+                      {strength.criteria.minLength ? <Check className="w-3 h-3" /> : <span className="w-3 h-3 text-center">•</span>}
+                      <span>At least 8 chars</span>
+                    </div>
+                    <div className={`flex items-center gap-1 ${strength.criteria.hasUppercase ? 'text-emerald-400' : 'text-slate-400'}`}>
+                      {strength.criteria.hasUppercase ? <Check className="w-3 h-3" /> : <span className="w-3 h-3 text-center">•</span>}
+                      <span>Uppercase (A-Z)</span>
+                    </div>
+                    <div className={`flex items-center gap-1 ${strength.criteria.hasNumber ? 'text-emerald-400' : 'text-slate-400'}`}>
+                      {strength.criteria.hasNumber ? <Check className="w-3 h-3" /> : <span className="w-3 h-3 text-center">•</span>}
+                      <span>Number (0-9)</span>
+                    </div>
+                    <div className={`flex items-center gap-1 ${strength.criteria.hasSpecial ? 'text-emerald-400' : 'text-slate-400'}`}>
+                      {strength.criteria.hasSpecial ? <Check className="w-3 h-3" /> : <span className="w-3 h-3 text-center">•</span>}
+                      <span>Special symbol (!@#)</span>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
 
             <button

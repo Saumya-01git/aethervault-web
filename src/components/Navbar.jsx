@@ -1,13 +1,13 @@
 import React from 'react';
-import { Search, LayoutGrid, List, LogOut, User as UserIcon, ArrowUpDown } from 'lucide-react';
+import { Search, LayoutGrid, List, LogOut, User as UserIcon, ArrowUpDown, X } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
-export default function Navbar({ searchQuery, setSearchQuery, viewMode, setViewMode, sortBy, setSortBy }) {
+export default function Navbar({ searchQuery, setSearchQuery, viewMode, setViewMode, sortBy, setSortBy, onOpenProfile }) {
   const { user, logout } = useAuth();
 
   return (
     <header className="h-16 border-b border-slate-800 glass-card px-6 flex items-center justify-between gap-4 sticky top-0 z-20">
-      {/* Search Input */}
+      {/* Search Input with Clear Button */}
       <div className="flex-1 max-w-md relative">
         <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
         <input
@@ -15,8 +15,17 @@ export default function Navbar({ searchQuery, setSearchQuery, viewMode, setViewM
           placeholder="Search files, folders, documents..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full glass-input rounded-xl pl-9 pr-4 py-2 text-sm"
+          className="w-full glass-input rounded-xl pl-9 pr-9 py-2 text-sm"
         />
+        {searchQuery && (
+          <button
+            onClick={() => setSearchQuery('')}
+            title="Clear Search"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200 p-0.5 rounded-full hover:bg-slate-800"
+          >
+            <X className="w-3.5 h-3.5" />
+          </button>
+        )}
       </div>
 
       {/* Controls & Profile */}
@@ -59,13 +68,22 @@ export default function Navbar({ searchQuery, setSearchQuery, viewMode, setViewM
 
         {/* User Profile & Sign Out */}
         <div className="flex items-center gap-3 pl-3 border-l border-slate-800">
-          <div className="w-8 h-8 rounded-full bg-blue-600/20 border border-blue-500/30 text-blue-400 flex items-center justify-center font-bold text-sm">
-            {user?.name ? user.name.charAt(0).toUpperCase() : <UserIcon className="w-4 h-4" />}
-          </div>
-          <div className="hidden sm:block text-left">
-            <p className="text-xs font-semibold text-white leading-tight">{user?.name || 'User'}</p>
-            <p className="text-[10px] text-slate-400 leading-tight">{user?.email}</p>
-          </div>
+          <button
+            onClick={onOpenProfile}
+            title="Open Profile & Settings"
+            className="flex items-center gap-2 hover:opacity-80 transition-opacity cursor-pointer group"
+          >
+            <div className="w-8 h-8 rounded-full bg-blue-600/20 border border-blue-500/30 text-blue-400 flex items-center justify-center font-bold text-sm group-hover:scale-105 transition-transform shadow-md shadow-blue-500/10">
+              {user?.name ? user.name.charAt(0).toUpperCase() : <UserIcon className="w-4 h-4" />}
+            </div>
+            <div className="hidden sm:block text-left">
+              <p className="text-xs font-semibold text-white leading-tight group-hover:text-blue-400 transition-colors">
+                {user?.name || 'User'}
+              </p>
+              <p className="text-[10px] text-slate-400 leading-tight">{user?.email}</p>
+            </div>
+          </button>
+
           <button
             onClick={logout}
             title="Sign Out"

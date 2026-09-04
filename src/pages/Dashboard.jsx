@@ -10,8 +10,9 @@ import UploadModal from '../components/UploadModal';
 import PreviewModal from '../components/PreviewModal';
 import ShareModal from '../components/ShareModal';
 import VersionModal from '../components/VersionModal';
+import ProfileModal from '../components/ProfileModal';
 import SkeletonLoader from '../components/SkeletonLoader';
-import { Folder, Sparkles, Trash2, RotateCcw, ShieldAlert } from 'lucide-react';
+import { Folder, Sparkles, Trash2, RotateCcw, ShieldAlert, UploadCloud } from 'lucide-react';
 
 export default function Dashboard() {
   const [activeTab, setActiveTab] = useState('my-drive');
@@ -27,9 +28,65 @@ export default function Dashboard() {
   
   const [isFolderModalOpen, setIsFolderModalOpen] = useState(false);
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+  const [droppedFile, setDroppedFile] = useState(null);
+  
   const [selectedPreviewFile, setSelectedPreviewFile] = useState(null);
   const [selectedShareResource, setSelectedShareResource] = useState(null);
   const [selectedVersionFile, setSelectedVersionFile] = useState(null);
+
+  const [isDraggingOverScreen, setIsDraggingOverScreen] = useState(false);
+
+  // Global drag & drop file upload listener
+  useEffect(() => {
+    let dragCounter = 0;
+
+    const handleDragEnter = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      dragCounter++;
+      if (e.dataTransfer.items && e.dataTransfer.items.length > 0) {
+        setIsDraggingOverScreen(true);
+      }
+    };
+
+    const handleDragLeave = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      dragCounter--;
+      if (dragCounter === 0) {
+        setIsDraggingOverScreen(false);
+      }
+    };
+
+    const handleDragOver = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+    };
+
+    const handleDrop = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      setIsDraggingOverScreen(false);
+      dragCounter = 0;
+      if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+        setDroppedFile(e.dataTransfer.files[0]);
+        setIsUploadModalOpen(true);
+      }
+    };
+
+    window.addEventListener('dragenter', handleDragEnter);
+    window.addEventListener('dragleave', handleDragLeave);
+    window.addEventListener('dragover', handleDragOver);
+    window.addEventListener('drop', handleDrop);
+
+    return () => {
+      window.removeEventListener('dragenter', handleDragEnter);
+      window.removeEventListener('dragleave', handleDragLeave);
+      window.removeEventListener('dragover', handleDragOver);
+      window.removeEventListener('drop', handleDrop);
+    };
+  }, []);
 
   // Fetch folders and files from Backend API
   const fetchContents = useCallback(async () => {
@@ -154,7 +211,18 @@ export default function Dashboard() {
   const sortedFiles = sortItems(files);
 
   return (
-    <div className="flex min-h-screen bg-slate-950 text-slate-100">
+    <div className="flex min-h-screen bg-slate-950 text-slate-100 relative">
+      {/* Global Drag & Drop Overlay */}
+      {isDraggingOverScreen && (
+        <div className="fixed inset-0 z-50 bg-blue-950/80 backdrop-blur-md flex flex-col items-center justify-center border-4 border-dashed border-blue-500 m-4 rounded-3xl animate-in fade-in zoom-in duration-200">
+          <div className="w-20 h-20 rounded-3xl bg-blue-600/20 text-blue-400 flex items-center justify-center mb-4 border border-blue-500/40 shadow-2xl shadow-blue-500/20">
+            <UploadCloud className="w-10 h-10 animate-bounce" />
+          </div>
+          <h2 className="text-2xl font-bold text-white mb-2">Drop File to Upload to AetherVault</h2>
+          <p className="text-sm text-slate-300">Release mouse to start instant encrypted cloud upload</p>
+        </div>
+      )}
+
       {/* Sidebar */}
       <Sidebar
         activeTab={activeTab}
@@ -164,7 +232,11 @@ export default function Dashboard() {
           setSearchQuery('');
         }}
         onOpenCreateFolder={() => setIsFolderModalOpen(true)}
-        onOpenUploadModal={() => setIsUploadModalOpen(true)}
+        onOpenUploadModal={() => {
+          setDroppedFile(null);
+          setIsUploadModalOpen(true);
+        }}
+        onOpenProfile={() => setIsProfileModalOpen(true)}
       />
 
       {/* Main Content Area */}
@@ -176,6 +248,7 @@ export default function Dashboard() {
           setViewMode={setViewMode}
           sortBy={sortBy}
           setSortBy={setSortBy}
+          onOpenProfile={() => setIsProfileModalOpen(true)}
         />
 
         <main className="flex-1 p-6 overflow-y-auto">
@@ -229,7 +302,10 @@ export default function Dashboard() {
               {activeTab === 'my-drive' && (
                 <div className="flex items-center justify-center gap-3">
                   <button
-                    onClick={() => setIsUploadModalOpen(true)}
+                    onClick={() => {
+                      setDroppedFile(null);
+                      setIsUploadModalOpen(true);
+                    }}
                     className="py-2.5 px-5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-medium text-xs shadow-lg shadow-blue-600/20"
                   >
                     Upload File
@@ -358,9 +434,13 @@ export default function Dashboard() {
 
       <UploadModal
         isOpen={isUploadModalOpen}
-        onClose={() => setIsUploadModalOpen(false)}
+        onClose={() => {
+          setIsUploadModalOpen(false);
+          setDroppedFile(null);
+        }}
         currentFolderId={currentFolderId}
         onUploadSuccess={fetchContents}
+        initialFile={droppedFile}
       />
 
       <PreviewModal
@@ -379,6 +459,11 @@ export default function Dashboard() {
         file={selectedVersionFile}
         isOpen={!!selectedVersionFile}
         onClose={() => setSelectedVersionFile(null)}
+      />
+
+      <ProfileModal
+        isOpen={isProfileModalOpen}
+        onClose={() => setIsProfileModalOpen(false)}
       />
     </div>
   );
