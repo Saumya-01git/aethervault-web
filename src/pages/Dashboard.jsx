@@ -279,40 +279,40 @@ export default function Dashboard() {
 
           {/* Quick Stats Cosmic Banner */}
           {activeTab === 'my-drive' && !searchQuery && (
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-              <div className="glass-card-cosmic p-4 rounded-3xl flex items-center gap-3.5 border border-cyan-500/20 shadow-lg hover:border-cyan-500/40 transition-all">
-                <div className="w-10 h-10 rounded-2xl bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 flex items-center justify-center shrink-0">
-                  <Folder className="w-5 h-5" />
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
+              <div className="glass-card-cosmic p-3 rounded-2xl flex items-center gap-3 border border-cyan-500/20 shadow-md hover:border-cyan-500/40 transition-all">
+                <div className="w-8.5 h-8.5 rounded-xl bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 flex items-center justify-center shrink-0">
+                  <Folder className="w-4.5 h-4.5" />
                 </div>
                 <div>
-                  <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Vault Inventory</p>
-                  <p className="text-sm font-bold text-white mt-0.5">
+                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Vault Inventory</p>
+                  <p className="text-xs font-bold text-white mt-0.5">
                     {folders.length} Folders · {files.length} Files
                   </p>
                 </div>
               </div>
 
-              <div className="glass-card-cosmic p-4 rounded-3xl flex items-center gap-3.5 border border-blue-500/20 shadow-lg hover:border-blue-500/40 transition-all">
-                <div className="w-10 h-10 rounded-2xl bg-blue-500/20 text-blue-400 border border-blue-500/30 flex items-center justify-center shrink-0">
-                  <ShieldAlert className="w-5 h-5" />
+              <div className="glass-card-cosmic p-3 rounded-2xl flex items-center gap-3 border border-blue-500/20 shadow-md hover:border-blue-500/40 transition-all">
+                <div className="w-8.5 h-8.5 rounded-xl bg-blue-500/20 text-blue-400 border border-blue-500/30 flex items-center justify-center shrink-0">
+                  <ShieldAlert className="w-4.5 h-4.5" />
                 </div>
                 <div>
-                  <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Security Protocol</p>
-                  <p className="text-sm font-bold text-emerald-400 mt-0.5 flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Security Protocol</p>
+                  <p className="text-xs font-bold text-emerald-400 mt-0.5 flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
                     <span>256-Bit Encrypted</span>
                   </p>
                 </div>
               </div>
 
-              <div className="glass-card-cosmic p-4 rounded-3xl flex items-center justify-between border border-indigo-500/20 shadow-lg hover:border-indigo-500/40 transition-all">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-2xl bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 flex items-center justify-center shrink-0">
-                    <UploadCloud className="w-5 h-5" />
+              <div className="glass-card-cosmic p-3 rounded-2xl flex items-center justify-between border border-indigo-500/20 shadow-md hover:border-indigo-500/40 transition-all">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8.5 h-8.5 rounded-xl bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 flex items-center justify-center shrink-0">
+                    <UploadCloud className="w-4.5 h-4.5" />
                   </div>
                   <div>
-                    <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Instant Sync</p>
-                    <p className="text-xs font-semibold text-slate-200 mt-0.5">Drag & drop files anywhere</p>
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Instant Sync</p>
+                    <p className="text-[11px] font-semibold text-slate-200 mt-0.5">Drag & drop files anywhere</p>
                   </div>
                 </div>
               </div>

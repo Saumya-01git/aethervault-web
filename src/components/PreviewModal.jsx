@@ -40,8 +40,17 @@ export default function PreviewModal({ file: initialFile, isOpen, onClose }) {
   const isAudio = mimeType.startsWith('audio/') || /\.(mp3|wav|ogg|aac|m4a)$/i.test(fileName);
   const isVideo = mimeType.startsWith('video/') || /\.(mp4|webm|mkv|mov)$/i.test(fileName);
 
-  // Construct absolute URL fallback for local development if downloadUrl missing
-  const activeUrl = file.downloadUrl || (file.storageKey ? `http://localhost:8080/uploads/${file.storageKey}` : null);
+  const resolveFileUrl = (url, storageKey) => {
+    if (url && !url.includes('localhost:8080') && !url.includes('localhost:10000')) {
+      return url;
+    }
+    if (!storageKey) return url;
+    const apiBase = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api';
+    const serverRoot = apiBase.replace(/\/api\/?$/, '');
+    return `${serverRoot}/uploads/${storageKey}`;
+  };
+
+  const activeUrl = resolveFileUrl(file.downloadUrl, file.storageKey);
 
   // Direct File Download Trigger
   const handleDownload = async (e) => {

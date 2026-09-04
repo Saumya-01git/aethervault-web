@@ -39,7 +39,17 @@ export default function FileCard({ file, onPreview, onDelete, onShare, onToggleS
   const fileMeta = getFileIcon(file.mimeType);
   const Icon = fileMeta.icon;
   const isStarred = Boolean(file.isStarred);
-  const downloadUrl = file.downloadUrl || (file.storageKey ? `http://localhost:8080/uploads/${file.storageKey}` : null);
+  const resolveFileUrl = (url, storageKey) => {
+    if (url && !url.includes('localhost:8080') && !url.includes('localhost:10000')) {
+      return url;
+    }
+    if (!storageKey) return url;
+    const apiBase = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api';
+    const serverRoot = apiBase.replace(/\/api\/?$/, '');
+    return `${serverRoot}/uploads/${storageKey}`;
+  };
+
+  const downloadUrl = resolveFileUrl(file.downloadUrl, file.storageKey);
   const [downloading, setDownloading] = useState(false);
 
   const ext = file.name ? file.name.split('.').pop().toUpperCase() : 'FILE';
