@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { HardDrive, Lock, Mail, User, ArrowRight, ShieldCheck, Eye, EyeOff, Check } from 'lucide-react';
+import { HardDrive, Lock, Mail, User, ArrowRight, ShieldCheck, Eye, EyeOff, Check, Sparkles, Shield, Zap, Globe, Orbit } from 'lucide-react';
 import { validateName, calculatePasswordStrength, validatePassword } from '../utils/validation';
+import CosmicBackground from '../components/CosmicBackground';
 
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
@@ -9,6 +10,13 @@ export default function AuthPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [themeMode, setThemeMode] = useState(() => localStorage.getItem('aether_background_mode') || 'earth');
+
+  const handleSetThemeMode = (mode) => {
+    setThemeMode(mode);
+    localStorage.setItem('aether_background_mode', mode);
+  };
+
   const { login, register } = useAuth();
 
   const strength = calculatePasswordStrength(formData.password);
@@ -54,28 +62,79 @@ export default function AuthPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-900/30 via-slate-950 to-slate-950">
-      <div className="w-full max-w-md">
-        {/* Logo Branding */}
+    <div className="min-h-screen relative flex items-center justify-center p-4 overflow-hidden bg-slate-950">
+      {/* Dynamic Interactive Cosmic Galaxy Canvas */}
+      <CosmicBackground themeMode={themeMode} />
+
+      {/* Top Right Background Theme Switcher */}
+      <div className="absolute top-4 right-4 z-20">
+        <div className="flex items-center p-1 rounded-2xl bg-slate-900/80 backdrop-blur-md border border-slate-800 text-xs">
+          <button
+            onClick={() => handleSetThemeMode('earth')}
+            title="Earth Horizon Background"
+            className={`px-3 py-1.5 rounded-xl font-semibold flex items-center gap-1.5 transition-all cursor-pointer ${
+              themeMode === 'earth'
+                ? 'bg-gradient-to-r from-blue-600 to-cyan-600 text-white shadow-md shadow-cyan-500/20'
+                : 'text-slate-400 hover:text-slate-200'
+            }`}
+          >
+            <Globe className="w-3.5 h-3.5 text-cyan-300" />
+            <span>Earth</span>
+          </button>
+          <button
+            onClick={() => handleSetThemeMode('stream')}
+            title="Galactic Stream Background"
+            className={`px-3 py-1.5 rounded-xl font-semibold flex items-center gap-1.5 transition-all cursor-pointer ${
+              themeMode === 'stream'
+                ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-md shadow-purple-500/20'
+                : 'text-slate-400 hover:text-slate-200'
+            }`}
+          >
+            <Orbit className="w-3.5 h-3.5 text-purple-300" />
+            <span>Stream</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Ambient Glowing Cosmic Halos */}
+      <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full bg-blue-600/20 blur-[120px] pointer-events-none animate-pulse-glow" />
+      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full bg-purple-600/20 blur-[120px] pointer-events-none animate-pulse-glow" style={{ animationDelay: '2s' }} />
+
+      <div className="w-full max-w-md relative z-10 my-8">
+        {/* Logo & Platform Branding */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-blue-600/20 text-blue-400 border border-blue-500/30 mb-4 shadow-lg shadow-blue-500/10">
-            <HardDrive className="w-8 h-8" />
+          <div className="relative inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-gradient-to-tr from-blue-600/30 via-indigo-600/20 to-purple-600/30 text-cyan-400 border border-cyan-500/30 mb-4 shadow-[0_0_30px_rgba(56,189,248,0.25)] group">
+            <HardDrive className="w-10 h-10 transform group-hover:scale-110 transition-transform duration-300" />
+            <div className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-cyan-400 animate-ping opacity-75" />
           </div>
-          <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-white via-slate-200 to-blue-400 bg-clip-text text-transparent">
+          <h1 className="text-4xl font-extrabold tracking-tight bg-gradient-to-r from-white via-slate-100 to-cyan-400 bg-clip-text text-transparent drop-shadow-sm">
             AetherVault
           </h1>
-          <p className="text-sm text-slate-400 mt-1">
-            Cloud Media File Storage & Sharing Platform
+          <p className="text-xs sm:text-sm font-medium text-slate-400 mt-2 flex items-center justify-center gap-1.5">
+            <Sparkles className="w-4 h-4 text-cyan-400" />
+            <span>Next-Gen Encrypted Cloud Storage & Media Vault</span>
           </p>
+
+          {/* Feature Badge Pills */}
+          <div className="flex items-center justify-center gap-2 mt-4 flex-wrap">
+            <span className="inline-flex items-center gap-1 text-[11px] font-medium px-2.5 py-1 rounded-full bg-blue-500/10 text-blue-300 border border-blue-500/20 shadow-sm">
+              <Shield className="w-3 h-3 text-blue-400" />
+              <span>256-bit Encrypted</span>
+            </span>
+            <span className="inline-flex items-center gap-1 text-[11px] font-medium px-2.5 py-1 rounded-full bg-cyan-500/10 text-cyan-300 border border-cyan-500/20 shadow-sm">
+              <Zap className="w-3 h-3 text-cyan-400" />
+              <span>Instant Cloud Sync</span>
+            </span>
+          </div>
         </div>
 
         {/* Auth Glass Card */}
-        <div className="glass-card rounded-2xl p-8 shadow-2xl">
-          <div className="flex border-b border-slate-800 pb-4 mb-6">
+        <div className="glass-card-cosmic glass-card-glow rounded-3xl p-8 shadow-2xl">
+          <div className="flex border-b border-slate-800/80 pb-4 mb-6">
             <button
               onClick={() => { setIsLogin(true); setError(''); }}
               className={`flex-1 py-2 text-sm font-semibold transition-all border-b-2 ${
-                isLogin ? 'border-blue-500 text-blue-400' : 'border-transparent text-slate-400 hover:text-slate-200'
+                isLogin ? 'border-cyan-400 text-cyan-400 drop-shadow-[0_0_10px_rgba(56,189,248,0.5)]' : 'border-transparent text-slate-400 hover:text-slate-200'
               }`}
             >
               Sign In
@@ -83,7 +142,7 @@ export default function AuthPage() {
             <button
               onClick={() => { setIsLogin(false); setError(''); }}
               className={`flex-1 py-2 text-sm font-semibold transition-all border-b-2 ${
-                !isLogin ? 'border-blue-500 text-blue-400' : 'border-transparent text-slate-400 hover:text-slate-200'
+                !isLogin ? 'border-cyan-400 text-cyan-400 drop-shadow-[0_0_10px_rgba(56,189,248,0.5)]' : 'border-transparent text-slate-400 hover:text-slate-200'
               }`}
             >
               Create Account
@@ -91,9 +150,9 @@ export default function AuthPage() {
           </div>
 
           {error && (
-            <div className="mb-4 p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-xs flex items-start gap-2">
-              <ShieldCheck className="w-4 h-4 shrink-0 mt-0.5" />
-              <span>{error}</span>
+            <div className="mb-5 p-3.5 rounded-2xl bg-red-500/10 border border-red-500/30 text-red-300 text-xs flex items-start gap-2.5 shadow-lg shadow-red-500/5">
+              <ShieldCheck className="w-4 h-4 shrink-0 mt-0.5 text-red-400" />
+              <span className="leading-relaxed">{error}</span>
             </div>
           )}
 
@@ -102,7 +161,7 @@ export default function AuthPage() {
               <div>
                 <label className="block text-xs font-medium text-slate-300 mb-1">Full Name</label>
                 <div className="relative">
-                  <User className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
+                  <User className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
                   <input
                     type="text"
                     required
@@ -112,11 +171,11 @@ export default function AuthPage() {
                       setFormData({ ...formData, name: e.target.value });
                       if (error) setError('');
                     }}
-                    className="w-full glass-input rounded-xl pl-9 pr-4 py-2.5 text-sm"
+                    className="w-full glass-input rounded-2xl pl-10 pr-4 py-3 text-sm focus:ring-2 focus:ring-cyan-500/30"
                   />
                 </div>
                 <p className="text-[11px] text-slate-400 mt-1">
-                  Name must contain letters (cannot be only numbers like '123').
+                  Name must contain letters (cannot be purely numeric like '123').
                 </p>
               </div>
             )}
@@ -124,14 +183,14 @@ export default function AuthPage() {
             <div>
               <label className="block text-xs font-medium text-slate-300 mb-1">Email Address</label>
               <div className="relative">
-                <Mail className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
+                <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
                 <input
                   type="email"
                   required
                   placeholder="name@example.com"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="w-full glass-input rounded-xl pl-9 pr-4 py-2.5 text-sm"
+                  className="w-full glass-input rounded-2xl pl-10 pr-4 py-3 text-sm focus:ring-2 focus:ring-cyan-500/30"
                 />
               </div>
             </div>
@@ -139,19 +198,19 @@ export default function AuthPage() {
             <div>
               <label className="block text-xs font-medium text-slate-300 mb-1">Password</label>
               <div className="relative">
-                <Lock className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
+                <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
                 <input
                   type={showPassword ? 'text' : 'password'}
                   required
                   placeholder="••••••••"
                   value={formData.password}
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                  className="w-full glass-input rounded-xl pl-9 pr-10 py-2.5 text-sm"
+                  className="w-full glass-input rounded-2xl pl-10 pr-10 py-3 text-sm focus:ring-2 focus:ring-cyan-500/30"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-3 text-slate-400 hover:text-slate-200"
+                  className="absolute right-3.5 top-3.5 text-slate-400 hover:text-slate-200"
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
@@ -159,10 +218,10 @@ export default function AuthPage() {
 
               {/* Password Strength Meter on Registration */}
               {!isLogin && formData.password && (
-                <div className="mt-2.5 space-y-2">
+                <div className="mt-3 space-y-2 p-3 rounded-2xl bg-slate-900/60 border border-slate-800">
                   <div className="flex items-center justify-between text-[11px] font-semibold">
                     <span className="text-slate-400">Password Strength:</span>
-                    <span className={`capitalize ${strength.score >= 3 ? 'text-emerald-400' : strength.score === 2 ? 'text-amber-400' : 'text-red-400'}`}>
+                    <span className={`capitalize font-bold ${strength.score >= 3 ? 'text-emerald-400' : strength.score === 2 ? 'text-amber-400' : 'text-red-400'}`}>
                       {strength.label}
                     </span>
                   </div>
@@ -199,9 +258,9 @@ export default function AuthPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full mt-2 py-3 px-4 rounded-xl bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white font-medium text-sm transition-all shadow-lg shadow-blue-600/25 flex items-center justify-center gap-2 disabled:opacity-50"
+              className="w-full mt-3 py-3.5 px-4 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white font-semibold text-sm transition-all duration-300 shadow-[0_0_25px_rgba(37,99,235,0.4)] hover:shadow-[0_0_35px_rgba(56,189,248,0.6)] flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
             >
-              {loading ? 'Processing...' : isLogin ? 'Sign In' : 'Create Account'}
+              {loading ? 'Processing...' : isLogin ? 'Sign In to Vault' : 'Create Vault Account'}
               <ArrowRight className="w-4 h-4" />
             </button>
           </form>

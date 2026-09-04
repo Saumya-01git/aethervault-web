@@ -11,7 +11,9 @@ import PreviewModal from '../components/PreviewModal';
 import ShareModal from '../components/ShareModal';
 import VersionModal from '../components/VersionModal';
 import ProfileModal from '../components/ProfileModal';
+import ActivityLogModal from '../components/ActivityLogModal';
 import SkeletonLoader from '../components/SkeletonLoader';
+import CosmicBackground from '../components/CosmicBackground';
 import { Folder, Sparkles, Trash2, RotateCcw, ShieldAlert, UploadCloud } from 'lucide-react';
 
 export default function Dashboard() {
@@ -19,7 +21,13 @@ export default function Dashboard() {
   const [currentFolderId, setCurrentFolderId] = useState(null);
   const [viewMode, setViewMode] = useState('grid');
   const [searchQuery, setSearchQuery] = useState('');
-  const [sortBy, setSortBy] = useState('name');
+  const [sortBy, setSortBy] = useState('date');
+  const [themeMode, setThemeMode] = useState(() => localStorage.getItem('aether_background_mode') || 'earth');
+
+  const handleSetThemeMode = (mode) => {
+    setThemeMode(mode);
+    localStorage.setItem('aether_background_mode', mode);
+  };
   
   const [folders, setFolders] = useState([]);
   const [files, setFiles] = useState([]);
@@ -29,6 +37,7 @@ export default function Dashboard() {
   const [isFolderModalOpen, setIsFolderModalOpen] = useState(false);
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+  const [isActivityModalOpen, setIsActivityModalOpen] = useState(false);
   const [droppedFile, setDroppedFile] = useState(null);
   
   const [selectedPreviewFile, setSelectedPreviewFile] = useState(null);
@@ -211,7 +220,10 @@ export default function Dashboard() {
   const sortedFiles = sortItems(files);
 
   return (
-    <div className="flex min-h-screen bg-slate-950 text-slate-100 relative">
+    <div className="flex min-h-screen bg-slate-950 text-slate-100 relative overflow-hidden">
+      {/* Dynamic Cosmic Galaxy Background */}
+      <CosmicBackground themeMode={themeMode} />
+
       {/* Global Drag & Drop Overlay */}
       {isDraggingOverScreen && (
         <div className="fixed inset-0 z-50 bg-blue-950/80 backdrop-blur-md flex flex-col items-center justify-center border-4 border-dashed border-blue-500 m-4 rounded-3xl animate-in fade-in zoom-in duration-200">
@@ -237,6 +249,8 @@ export default function Dashboard() {
           setIsUploadModalOpen(true);
         }}
         onOpenProfile={() => setIsProfileModalOpen(true)}
+        onOpenActivity={() => setIsActivityModalOpen(true)}
+        totalBytes={files.reduce((acc, f) => acc + (f.sizeBytes || 0), 0)}
       />
 
       {/* Main Content Area */}
@@ -248,7 +262,10 @@ export default function Dashboard() {
           setViewMode={setViewMode}
           sortBy={sortBy}
           setSortBy={setSortBy}
+          themeMode={themeMode}
+          setThemeMode={handleSetThemeMode}
           onOpenProfile={() => setIsProfileModalOpen(true)}
+          onOpenActivity={() => setIsActivityModalOpen(true)}
         />
 
         <main className="flex-1 p-6 overflow-y-auto">
@@ -260,10 +277,52 @@ export default function Dashboard() {
             />
           )}
 
+          {/* Quick Stats Cosmic Banner */}
+          {activeTab === 'my-drive' && !searchQuery && (
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+              <div className="glass-card-cosmic p-4 rounded-3xl flex items-center gap-3.5 border border-cyan-500/20 shadow-lg hover:border-cyan-500/40 transition-all">
+                <div className="w-10 h-10 rounded-2xl bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 flex items-center justify-center shrink-0">
+                  <Folder className="w-5 h-5" />
+                </div>
+                <div>
+                  <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Vault Inventory</p>
+                  <p className="text-sm font-bold text-white mt-0.5">
+                    {folders.length} Folders · {files.length} Files
+                  </p>
+                </div>
+              </div>
+
+              <div className="glass-card-cosmic p-4 rounded-3xl flex items-center gap-3.5 border border-blue-500/20 shadow-lg hover:border-blue-500/40 transition-all">
+                <div className="w-10 h-10 rounded-2xl bg-blue-500/20 text-blue-400 border border-blue-500/30 flex items-center justify-center shrink-0">
+                  <ShieldAlert className="w-5 h-5" />
+                </div>
+                <div>
+                  <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Security Protocol</p>
+                  <p className="text-sm font-bold text-emerald-400 mt-0.5 flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                    <span>256-Bit Encrypted</span>
+                  </p>
+                </div>
+              </div>
+
+              <div className="glass-card-cosmic p-4 rounded-3xl flex items-center justify-between border border-indigo-500/20 shadow-lg hover:border-indigo-500/40 transition-all">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-2xl bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 flex items-center justify-center shrink-0">
+                    <UploadCloud className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Instant Sync</p>
+                    <p className="text-xs font-semibold text-slate-200 mt-0.5">Drag & drop files anywhere</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Section Heading */}
           <div className="flex items-center justify-between my-4">
             <h2 className="text-xl font-bold text-white capitalize flex items-center gap-2">
-              <Sparkles className="w-5 h-5 text-blue-400" />
+              <Sparkles className="w-5 h-5 text-cyan-400" />
               <span>
                 {searchQuery
                   ? `Search Results for "${searchQuery}"`
@@ -464,6 +523,11 @@ export default function Dashboard() {
       <ProfileModal
         isOpen={isProfileModalOpen}
         onClose={() => setIsProfileModalOpen(false)}
+      />
+
+      <ActivityLogModal
+        isOpen={isActivityModalOpen}
+        onClose={() => setIsActivityModalOpen(false)}
       />
     </div>
   );
