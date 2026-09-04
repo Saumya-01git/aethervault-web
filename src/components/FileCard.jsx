@@ -29,64 +29,64 @@ const getFileMeta = (mimeType = '', fileName = '') => {
   if (mimeType.startsWith('image/') || /\.(jpg|jpeg|png|gif|webp|svg|bmp)$/i.test(name)) {
     return {
       icon: ImageIcon,
-      iconColor: 'text-cyan-400 bg-cyan-500/20 border-cyan-500/40',
-      badgeColor: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40',
-      cardStyle: 'bg-slate-900/95 border-cyan-500/40 shadow-[0_4px_20px_rgba(56,189,248,0.15)] hover:border-cyan-400 hover:shadow-[0_8px_30px_rgba(56,189,248,0.3)]',
+      iconColor: 'text-cyan-300 bg-cyan-500/30 border-cyan-400',
+      badgeColor: 'bg-cyan-500/30 text-cyan-200 border-cyan-400',
+      cardStyle: 'bg-[#0b1329] border-2 border-cyan-400 shadow-[0_4px_25px_rgba(56,189,248,0.25)] hover:border-cyan-300 hover:shadow-[0_8px_35px_rgba(56,189,248,0.45)]',
     };
   }
   if (mimeType.startsWith('video/') || /\.(mp4|webm|mkv|mov|avi)$/i.test(name)) {
     return {
       icon: Film,
-      iconColor: 'text-purple-400 bg-purple-500/20 border-purple-500/40',
-      badgeColor: 'bg-purple-500/20 text-purple-300 border-purple-500/40',
-      cardStyle: 'bg-slate-900/95 border-purple-500/40 shadow-[0_4px_20px_rgba(168,85,247,0.15)] hover:border-purple-400 hover:shadow-[0_8px_30px_rgba(168,85,247,0.3)]',
+      iconColor: 'text-purple-300 bg-purple-500/30 border-purple-400',
+      badgeColor: 'bg-purple-500/30 text-purple-200 border-purple-400',
+      cardStyle: 'bg-[#0b1329] border-2 border-purple-400 shadow-[0_4px_25px_rgba(168,85,247,0.25)] hover:border-purple-300 hover:shadow-[0_8px_35px_rgba(168,85,247,0.45)]',
     };
   }
   if (mimeType.startsWith('audio/') || /\.(mp3|wav|ogg|m4a|flac)$/i.test(name)) {
     return {
       icon: Music,
-      iconColor: 'text-pink-400 bg-pink-500/20 border-pink-500/40',
-      badgeColor: 'bg-pink-500/20 text-pink-300 border-pink-500/40',
-      cardStyle: 'bg-slate-900/95 border-pink-500/40 shadow-[0_4px_20px_rgba(236,72,153,0.15)] hover:border-pink-400 hover:shadow-[0_8px_30px_rgba(236,72,153,0.3)]',
+      iconColor: 'text-pink-300 bg-pink-500/30 border-pink-400',
+      badgeColor: 'bg-pink-500/30 text-pink-200 border-pink-400',
+      cardStyle: 'bg-[#0b1329] border-2 border-pink-400 shadow-[0_4px_25px_rgba(236,72,153,0.25)] hover:border-pink-300 hover:shadow-[0_8px_35px_rgba(236,72,153,0.45)]',
     };
   }
   if (mimeType.includes('pdf') || mimeType.includes('document') || mimeType.includes('text') || /\.(pdf|doc|docx|txt|md)$/i.test(name)) {
     return {
       icon: FileText,
-      iconColor: 'text-blue-400 bg-blue-500/20 border-blue-500/40',
-      badgeColor: 'bg-blue-500/20 text-blue-300 border-blue-500/40',
-      cardStyle: 'bg-slate-900/95 border-blue-500/40 shadow-[0_4px_20px_rgba(59,130,246,0.15)] hover:border-blue-400 hover:shadow-[0_8px_30px_rgba(59,130,246,0.3)]',
+      iconColor: 'text-blue-300 bg-blue-500/30 border-blue-400',
+      badgeColor: 'bg-blue-500/30 text-blue-200 border-blue-400',
+      cardStyle: 'bg-[#0b1329] border-2 border-blue-400 shadow-[0_4px_25px_rgba(59,130,246,0.25)] hover:border-blue-300 hover:shadow-[0_8px_35px_rgba(59,130,246,0.45)]',
     };
   }
   if (mimeType.includes('json') || mimeType.includes('javascript') || mimeType.includes('html') || /\.(js|jsx|ts|tsx|json|html|css|py)$/i.test(name)) {
     return {
       icon: FileCode,
-      iconColor: 'text-amber-400 bg-amber-500/20 border-amber-500/40',
-      badgeColor: 'bg-amber-500/20 text-amber-300 border-amber-500/40',
-      cardStyle: 'bg-slate-900/95 border-amber-500/40 shadow-[0_4px_20px_rgba(245,158,11,0.15)] hover:border-amber-400 hover:shadow-[0_8px_30px_rgba(245,158,11,0.3)]',
+      iconColor: 'text-amber-300 bg-amber-500/30 border-amber-400',
+      badgeColor: 'bg-amber-500/30 text-amber-200 border-amber-400',
+      cardStyle: 'bg-[#0b1329] border-2 border-amber-400 shadow-[0_4px_25px_rgba(245,158,11,0.25)] hover:border-amber-300 hover:shadow-[0_8px_35px_rgba(245,158,11,0.45)]',
     };
   }
   if (mimeType.includes('sheet') || mimeType.includes('csv') || mimeType.includes('excel') || /\.(xls|xlsx|csv)$/i.test(name)) {
     return {
       icon: FileSpreadsheet,
-      iconColor: 'text-emerald-400 bg-emerald-500/20 border-emerald-500/40',
-      badgeColor: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40',
-      cardStyle: 'bg-slate-900/95 border-emerald-500/40 shadow-[0_4px_20px_rgba(16,185,129,0.15)] hover:border-emerald-400 hover:shadow-[0_8px_30px_rgba(16,185,129,0.3)]',
+      iconColor: 'text-emerald-300 bg-emerald-500/30 border-emerald-400',
+      badgeColor: 'bg-emerald-500/30 text-emerald-200 border-emerald-400',
+      cardStyle: 'bg-[#0b1329] border-2 border-emerald-400 shadow-[0_4px_25px_rgba(16,185,129,0.25)] hover:border-emerald-300 hover:shadow-[0_8px_35px_rgba(16,185,129,0.45)]',
     };
   }
   if (mimeType.includes('zip') || mimeType.includes('tar') || mimeType.includes('rar') || /\.(zip|rar|7z|tar|gz)$/i.test(name)) {
     return {
       icon: Archive,
-      iconColor: 'text-orange-400 bg-orange-500/20 border-orange-500/40',
-      badgeColor: 'bg-orange-500/20 text-orange-300 border-orange-500/40',
-      cardStyle: 'bg-slate-900/95 border-orange-500/40 shadow-[0_4px_20px_rgba(249,115,22,0.15)] hover:border-orange-400 hover:shadow-[0_8px_30px_rgba(249,115,22,0.3)]',
+      iconColor: 'text-orange-300 bg-orange-500/30 border-orange-400',
+      badgeColor: 'bg-orange-500/30 text-orange-200 border-orange-400',
+      cardStyle: 'bg-[#0b1329] border-2 border-orange-400 shadow-[0_4px_25px_rgba(249,115,22,0.25)] hover:border-orange-300 hover:shadow-[0_8px_35px_rgba(249,115,22,0.45)]',
     };
   }
   return {
     icon: File,
-    iconColor: 'text-indigo-400 bg-indigo-500/20 border-indigo-500/40',
-    badgeColor: 'bg-indigo-500/20 text-indigo-300 border-indigo-500/40',
-    cardStyle: 'bg-slate-900/95 border-indigo-500/40 shadow-[0_4px_20px_rgba(99,102,241,0.15)] hover:border-indigo-400 hover:shadow-[0_8px_30px_rgba(99,102,241,0.3)]',
+    iconColor: 'text-indigo-300 bg-indigo-500/30 border-indigo-400',
+    badgeColor: 'bg-indigo-500/30 text-indigo-200 border-indigo-400',
+    cardStyle: 'bg-[#0b1329] border-2 border-indigo-400 shadow-[0_4px_25px_rgba(99,102,241,0.25)] hover:border-indigo-300 hover:shadow-[0_8px_35px_rgba(99,102,241,0.45)]',
   };
 };
 
@@ -138,9 +138,9 @@ export default function FileCard({ file, onPreview, onDelete, onShare, onToggleS
     return (
       <div 
         onClick={() => onPreview(file)}
-        className={`flex items-center justify-between p-3.5 rounded-2xl cursor-pointer group transition-all duration-300 border-2 shadow-md ${
+        className={`flex items-center justify-between p-4 rounded-2xl cursor-pointer group transition-all duration-300 ${
           isStarred 
-            ? 'bg-slate-900/95 border-amber-500/60 shadow-[0_0_15px_rgba(245,158,11,0.2)]' 
+            ? 'bg-[#0b1329] border-2 border-amber-400 shadow-[0_0_20px_rgba(245,158,11,0.3)]' 
             : meta.cardStyle
         }`}
       >
@@ -151,15 +151,15 @@ export default function FileCard({ file, onPreview, onDelete, onShare, onToggleS
           <div className="min-w-0">
             <p className="text-sm font-bold text-white group-hover:text-cyan-300 truncate flex items-center gap-1.5">
               <span className="truncate">{file.name}</span>
-              {isStarred && <Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400 inline shrink-0" />}
+              {isStarred && <Star className="w-4 h-4 text-amber-400 fill-amber-400 inline shrink-0" />}
             </p>
             <div className="flex items-center gap-2 mt-0.5">
-              <span className="text-[11px] font-medium text-slate-300">{formatFileSize(file.sizeBytes)}</span>
-              <span className={`text-[9px] font-bold px-1.5 py-0.2 rounded border ${meta.badgeColor}`}>{ext}</span>
+              <span className="text-[11px] font-semibold text-slate-300">{formatFileSize(file.sizeBytes)}</span>
+              <span className={`text-[9px] font-extrabold px-1.5 py-0.2 rounded border ${meta.badgeColor}`}>{ext}</span>
             </div>
           </div>
         </div>
-        <div className="flex items-center gap-2 shrink-0">
+        <div className="flex items-center gap-1.5 shrink-0">
           {onToggleStar && (
             <button
               onClick={(e) => { e.stopPropagation(); onToggleStar('file', file.id, isStarred); }}
@@ -214,9 +214,9 @@ export default function FileCard({ file, onPreview, onDelete, onShare, onToggleS
   return (
     <div
       onClick={() => onPreview(file)}
-      className={`p-4.5 rounded-3xl cursor-pointer group transition-all duration-300 border-2 flex flex-col justify-between hover:-translate-y-1.5 ${
+      className={`p-5 rounded-3xl cursor-pointer group transition-all duration-300 flex flex-col justify-between hover:-translate-y-1.5 ${
         isStarred 
-          ? 'bg-slate-900/95 border-amber-500/60 shadow-[0_0_25px_rgba(245,158,11,0.25)]' 
+          ? 'bg-[#0b1329] border-2 border-amber-400 shadow-[0_0_30px_rgba(245,158,11,0.35)]' 
           : meta.cardStyle
       }`}
     >
@@ -224,7 +224,7 @@ export default function FileCard({ file, onPreview, onDelete, onShare, onToggleS
         <div className={`w-11 h-11 rounded-2xl border flex items-center justify-center shadow-md transition-transform group-hover:scale-105 ${meta.iconColor}`}>
           <Icon className="w-5.5 h-5.5" />
         </div>
-        <div className="flex items-center gap-1 transition-all">
+        <div className="flex items-center gap-1">
           {onToggleStar && (
             <button
               onClick={(e) => { e.stopPropagation(); onToggleStar('file', file.id, isStarred); }}
@@ -278,11 +278,11 @@ export default function FileCard({ file, onPreview, onDelete, onShare, onToggleS
           <h3 className="font-bold text-sm text-white group-hover:text-cyan-300 truncate flex-1" title={file.name}>
             {file.name}
           </h3>
-          <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded border shrink-0 ${meta.badgeColor}`}>
+          <span className={`text-[9px] font-extrabold px-1.5 py-0.5 rounded border shrink-0 ${meta.badgeColor}`}>
             {ext}
           </span>
         </div>
-        <div className="flex items-center justify-between text-[11px] font-medium text-slate-300">
+        <div className="flex items-center justify-between text-[11px] font-semibold text-slate-300">
           <span>{formatFileSize(file.sizeBytes)}</span>
           <span className="capitalize text-[10px] text-slate-400">{file.mimeType?.split('/')[1] || 'file'}</span>
         </div>
