@@ -210,9 +210,10 @@ export default function AuthPage() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3.5 top-3.5 text-slate-400 hover:text-slate-200"
+                  className="absolute right-3.5 top-3.5 text-slate-400 hover:text-cyan-400 hover:scale-110 transition-all duration-200 cursor-pointer drop-shadow-[0_0_8px_rgba(56,189,248,0)] hover:drop-shadow-[0_0_10px_rgba(56,189,248,0.9)]"
+                  title={showPassword ? "Hide Password" : "Show Password"}
                 >
-                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  {showPassword ? <EyeOff className="w-4 h-4 text-cyan-400" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
 
