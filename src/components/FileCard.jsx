@@ -100,7 +100,7 @@ export default function FileCard({ file, onPreview, onDelete, onShare, onToggleS
       return url;
     }
     if (!storageKey) return url;
-    const apiBase = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api';
+    const apiBase = import.meta.env.VITE_API_BASE_URL || 'https://aethervault-api.onrender.com/api';
     const serverRoot = apiBase.replace(/\/api\/?$/, '');
     return `${serverRoot}/uploads/${storageKey}`;
   };

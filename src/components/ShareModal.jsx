@@ -101,7 +101,7 @@ export default function ShareModal({ resource, isOpen, onClose }) {
     if (url && !url.includes('localhost:8080') && !url.includes('localhost:10000')) {
       return url;
     }
-    const apiBase = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api';
+    const apiBase = import.meta.env.VITE_API_BASE_URL || 'https://aethervault-api.onrender.com/api';
     const serverRoot = apiBase.replace(/\/api\/?$/, '');
     return `${serverRoot}/api/shares/link/${token}`;
   };
