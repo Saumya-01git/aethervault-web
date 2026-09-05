@@ -140,7 +140,7 @@ export default function UploadModal({ isOpen, onClose, currentFolderId, onUpload
             {selectedFile ? selectedFile.name : 'Click or Drag & Drop file here'}
           </p>
           <p className="text-xs text-slate-400 mt-1">
-            {selectedFile ? `${(selectedFile.size / (1024 * 1024)).toFixed(2)} MB` : 'Supports Images, PDFs, Videos, Documents up to 100MB'}
+            {selectedFile ? `${(selectedFile.size / (1024 * 1024)).toFixed(2)} MB` : 'Supports Music, Audio, Videos, Images, PDFs, Documents & Zip files up to 100MB'}
           </p>
         </div>
 
