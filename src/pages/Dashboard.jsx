@@ -256,7 +256,7 @@ export default function Dashboard() {
         }}
         onOpenProfile={() => setIsProfileModalOpen(true)}
         onOpenActivity={() => setIsActivityModalOpen(true)}
-        totalBytes={totalStorageBytes || files.reduce((acc, f) => acc + (f.sizeBytes || 0), 0)}
+        totalBytes={files.reduce((acc, f) => acc + Number(f.size || f.sizeBytes || 0), 0)}
       />
 
       {/* Main Content Area */}
