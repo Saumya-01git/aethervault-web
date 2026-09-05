@@ -121,11 +121,17 @@ export default function Dashboard() {
         setFolders(res.data.children?.folders || []);
         setFiles(res.data.children?.files || []);
         setPath(res.data.path || []);
+        if (typeof res.data.totalBytes === 'number') {
+          setTotalStorageBytes(res.data.totalBytes);
+        }
       } else {
         const res = await api.get('/folders');
         setFolders(res.data.folders || []);
         setFiles(res.data.files || []);
         setPath([]);
+        if (typeof res.data.totalBytes === 'number') {
+          setTotalStorageBytes(res.data.totalBytes);
+        }
       }
     } catch (err) {
       console.error('Error fetching drive contents:', err);
@@ -250,7 +256,7 @@ export default function Dashboard() {
         }}
         onOpenProfile={() => setIsProfileModalOpen(true)}
         onOpenActivity={() => setIsActivityModalOpen(true)}
-        totalBytes={files.reduce((acc, f) => acc + (f.sizeBytes || 0), 0)}
+        totalBytes={totalStorageBytes || files.reduce((acc, f) => acc + (f.sizeBytes || 0), 0)}
       />
 
       {/* Main Content Area */}

@@ -97,10 +97,20 @@ export default function ShareModal({ resource, isOpen, onClose }) {
     }
   };
 
+  const resolveShareUrl = (url, token) => {
+    if (url && !url.includes('localhost:8080') && !url.includes('localhost:10000')) {
+      return url;
+    }
+    const apiBase = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api';
+    const serverRoot = apiBase.replace(/\/api\/?$/, '');
+    return `${serverRoot}/api/shares/link/${token}`;
+  };
+
   // Copy Link to Clipboard
   const handleCopyLink = () => {
-    if (publicLink?.shareUrl) {
-      navigator.clipboard.writeText(publicLink.shareUrl);
+    if (publicLink?.token) {
+      const shareUrlToCopy = resolveShareUrl(publicLink.shareUrl, publicLink.token);
+      navigator.clipboard.writeText(shareUrlToCopy);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     }
@@ -261,7 +271,7 @@ export default function ShareModal({ resource, isOpen, onClose }) {
                   <input
                     type="text"
                     readOnly
-                    value={publicLink.shareUrl}
+                    value={resolveShareUrl(publicLink.shareUrl, publicLink.token)}
                     className="flex-1 glass-input rounded-xl px-3 py-2 text-xs bg-slate-950 font-mono text-slate-300"
                   />
                   <button
