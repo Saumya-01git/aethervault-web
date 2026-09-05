@@ -18,7 +18,7 @@ const formatBytesShort = (bytes = 0) => {
   const k = 1024;
   const sizes = ['B', 'KB', 'MB', 'GB'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 };
 
 export default function Sidebar({ activeTab, setActiveTab, onOpenCreateFolder, onOpenUploadModal, onOpenProfile, onOpenActivity, totalBytes = 0 }) {
