@@ -254,7 +254,7 @@ export default function Dashboard() {
       />
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className="flex-1 flex flex-col min-w-0 relative z-10">
         <Navbar
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
@@ -268,7 +268,7 @@ export default function Dashboard() {
           onOpenActivity={() => setIsActivityModalOpen(true)}
         />
 
-        <main className="flex-1 p-6 overflow-y-auto">
+        <main className="flex-1 p-6 overflow-y-auto relative z-10">
           {/* Breadcrumbs Navigation */}
           {activeTab === 'my-drive' && (
             <Breadcrumbs
