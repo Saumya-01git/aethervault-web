@@ -33,6 +33,7 @@ export default function Dashboard() {
   const [files, setFiles] = useState([]);
   const [path, setPath] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [totalStorageBytes, setTotalStorageBytes] = useState(0);
   
   const [isFolderModalOpen, setIsFolderModalOpen] = useState(false);
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
@@ -256,7 +257,7 @@ export default function Dashboard() {
         }}
         onOpenProfile={() => setIsProfileModalOpen(true)}
         onOpenActivity={() => setIsActivityModalOpen(true)}
-        totalBytes={files.reduce((acc, f) => acc + Number(f.size || f.sizeBytes || 0), 0)}
+        totalBytes={totalStorageBytes || files.reduce((acc, f) => acc + Number(f.size || f.sizeBytes || 0), 0)}
       />
 
       {/* Main Content Area */}
