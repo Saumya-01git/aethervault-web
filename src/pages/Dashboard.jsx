@@ -107,6 +107,11 @@ export default function Dashboard() {
         setFolders(res.data.folders || []);
         setFiles(res.data.files || []);
         setPath([]);
+      } else if (activeTab === 'shared') {
+        const res = await api.get('/shares/shared-with-me');
+        setFolders(res.data.folders || []);
+        setFiles(res.data.files || []);
+        setPath([]);
       } else if (activeTab === 'starred') {
         const res = await api.get('/stars');
         setFolders(res.data.starredFolders || []);
